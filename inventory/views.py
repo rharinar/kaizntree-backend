@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from django.core.cache import cache
+from django.contrib.postgres.search import SearchQuery, SearchVector
 
 # Define a view to list items
 @api_view(['GET'])
@@ -28,11 +29,13 @@ def item_list(request):
         # Search functionality
         search_query = request.query_params.get('search', None)
         if search_query:
-            items = items.filter(name__icontains=search_query)
+            # search_query = SearchQuery(search_query)
+            vector = (SearchVector("sku")+SearchVector("name")+SearchVector("description"))
+            items = items.annotate(search=vector).filter(search__icontains=search_query).order_by("name")
+            # .filter(name__icontains=search_query)
         
         # Filter by category
         category_id = request.query_params.get('category_id', None)
-        print(category_id)
         if category_id:
             items = items.filter(category_id=category_id)
 

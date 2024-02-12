@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'inventory',
     'django_filters',
     'users',
-    'corsheaders'
+    'corsheaders',
+    'drf_yasg'
 ]
 
 AUTH_USER_MODEL = "users.User"
