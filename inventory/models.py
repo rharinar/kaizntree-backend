@@ -51,20 +51,23 @@ class Items(models.Model):
     category = models.ForeignKey(Categories, models.DO_NOTHING, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     tags = models.ManyToManyField(Tags, through='ItemTags')
+    in_stock_quantity = models.IntegerField()
+    available_stock_quantity = models.IntegerField()
+    low_stock_threshold = models.IntegerField(blank=True, null=True)
     class Meta:
         managed = False
         db_table = 'items'
 
 
-class StockStatus(models.Model):
-    item = models.OneToOneField(Items, models.DO_NOTHING, primary_key=True)
-    in_stock_quantity = models.IntegerField()
-    available_stock_quantity = models.IntegerField()
-    low_stock_threshold = models.IntegerField(blank=True, null=True)
+# class StockStatus(models.Model):
+#     item = models.OneToOneField(Items, models.DO_NOTHING, primary_key=True)
+#     in_stock_quantity = models.IntegerField()
+#     available_stock_quantity = models.IntegerField()
+#     low_stock_threshold = models.IntegerField(blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'stock_status'
+#     class Meta:
+#         managed = False
+#         db_table = 'stock_status'
 
 
 class Users(models.Model):

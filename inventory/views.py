@@ -18,11 +18,12 @@ from django.core.cache import cache
 def item_list(request):
     try:
         # Check if items are cached, retrieve them if available, otherwise query the database
-        if cache.get('items'):
-            items = cache.get('items')
-        else:
-            items = Items.objects.all()
-            cache.set('items', items, timeout=10)
+        items = Items.objects.all()
+        # if cache.get('items'):
+        #     items = cache.get('items')
+        # else:
+        #     items = Items.objects.all()
+        #     cache.set('items', items, timeout=10)
 
         # Search functionality
         search_query = request.query_params.get('search', None)
@@ -51,6 +52,7 @@ def item_list(request):
 
 # Define a view to create an item
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_item(request):
     try:
         # Deserialize the incoming data and validate it
