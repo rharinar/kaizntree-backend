@@ -16,18 +16,8 @@ class Categories(models.Model):
         db_table = 'categories'
 
 
-class InventoryUser(models.Model):
-    name = models.CharField(max_length=255)
-    gender = models.CharField(max_length=10)
-    age = models.IntegerField()
-
-    class Meta:
-        managed = False
-        db_table = 'inventory_user'
-
-
 class ItemTags(models.Model):
-    item = models.OneToOneField('Items', models.DO_NOTHING, primary_key=True)  # The composite primary key (item_id, tag_id) found, that is not supported. The first column is selected.
+    item = models.OneToOneField('Items', models.DO_NOTHING, primary_key=True)  
     tag = models.ForeignKey('Tags', models.DO_NOTHING)
 
     class Meta:
@@ -58,24 +48,3 @@ class Items(models.Model):
         managed = False
         db_table = 'items'
 
-
-# class StockStatus(models.Model):
-#     item = models.OneToOneField(Items, models.DO_NOTHING, primary_key=True)
-#     in_stock_quantity = models.IntegerField()
-#     available_stock_quantity = models.IntegerField()
-#     low_stock_threshold = models.IntegerField(blank=True, null=True)
-
-#     class Meta:
-#         managed = False
-#         db_table = 'stock_status'
-
-
-class Users(models.Model):
-    user_id = models.AutoField(primary_key=True)
-    username = models.CharField(unique=True, max_length=100)
-    password_hash = models.CharField(max_length=255)
-    created_at = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'users'

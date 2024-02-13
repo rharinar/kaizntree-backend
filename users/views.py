@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 
 from .serializer import SignUpSerializer
 from .tokens import create_jwt_pair_for_user
-
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 # Create your views here.
 
 
@@ -15,6 +16,14 @@ class SignUpView(generics.GenericAPIView):
     serializer_class = SignUpSerializer
     permission_classes = []
 
+    @swagger_auto_schema(
+        operation_description="Sign up a new user.",
+        request_body=SignUpSerializer,
+        responses={
+            201: openapi.Response('User Created Successfully', SignUpSerializer),
+            400: 'Bad Request'
+        }
+    )
     def post(self, request: Request):
         data = request.data
 
@@ -33,6 +42,46 @@ class SignUpView(generics.GenericAPIView):
 class LoginView(APIView):
     permission_classes = []
 
+    @swagger_auto_schema(
+        operation_description="Login a user and retrieve JWT tokens.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'email': openapi.Schema(type=openapi.TYPE_STRING, description="User's email"),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description="User's password"),
+            },
+            required=['email', 'password'],
+        ),
+        responses={
+            200: openapi.Response(
+                description="Login Successful",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'message': openapi.Schema(type=openapi.TYPE_STRING, description="Success message"),
+                        'tokens': openapi.Schema(
+                            type=openapi.TYPE_OBJECT,
+                            properties={
+                                'access': openapi.Schema(type=openapi.TYPE_STRING, description="Access Token"),
+                                'refresh': openapi.Schema(type=openapi.TYPE_STRING, description="Refresh Token"),
+                            },
+                            description="JWT Tokens"
+                        ),
+                    },
+                ),
+                examples={
+                    'application/json': {
+                        'message': "Login Successful",
+                        'tokens': {
+                            'access': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...',
+                            'refresh': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...'
+                        }
+                    }
+                }
+            ),
+            400: 'Invalid email or password'
+        }
+    )
     def post(self, request: Request):
         email = request.data.get("email")
         password = request.data.get("password")
@@ -48,8 +97,3 @@ class LoginView(APIView):
 
         else:
             return Response(data={"message": "Invalid email or password"})
-
-    def get(self, request: Request):
-        content = {"user": str(request.user), "auth": str(request.auth)}
-
-        return Response(data=content, status=status.HTTP_200_OK)

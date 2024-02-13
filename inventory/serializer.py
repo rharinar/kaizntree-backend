@@ -1,10 +1,5 @@
 from rest_framework import serializers
-from .models import InventoryUser, Categories, Tags, Items, ItemTags 
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = InventoryUser
-        fields = ('id', 'name', 'gender', 'age')
+from .models import Categories, Tags, Items, ItemTags 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

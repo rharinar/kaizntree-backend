@@ -38,9 +38,9 @@ class ItemAndCategoryAPITests(APITestCase):
         data = {
             "sku": "12345ABC",
             "name": "Smartphone",
-            "category": {"name": "Electronics"},  # Assuming nested serialization
+            "category": {"name": "Electronics"},  
             "description": "Latest model",
-            "tags": [],  # Assuming no tags for simplicity
+            "tags": [],  
             "in_stock_quantity": 10,
             "available_stock_quantity": 10,
             "low_stock_threshold": 2
@@ -68,4 +68,4 @@ class ItemAndCategoryAPITests(APITestCase):
 
         response = self.client.get(self.item_list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)  # Assuming pagination is set to show 2 items per page
+        self.assertEqual(len(response.data), 1)  
