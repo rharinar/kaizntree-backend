@@ -47,6 +47,7 @@ item_response_example = [{
         openapi.Parameter('search', openapi.IN_QUERY, description="Search term for item name or description", type=openapi.TYPE_STRING),
         openapi.Parameter('category_id', openapi.IN_QUERY, description="Category ID to filter items", type=openapi.TYPE_INTEGER),
         openapi.Parameter('sort_by', openapi.IN_QUERY, description="Field name to sort items", type=openapi.TYPE_STRING),
+        openapi.Parameter('page', openapi.IN_QUERY, description="Page number enabled by pagination", type=openapi.TYPE_STRING),
     ],
     responses={
         200: openapi.Response(

@@ -47,4 +47,5 @@ class Items(models.Model):
     class Meta:
         managed = False
         db_table = 'items'
+        ordering = ['name']
 

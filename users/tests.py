@@ -14,7 +14,7 @@ class UserAuthenticationTest(APITestCase):
             'email': 'test@example.com',
             'password': 'testpassword123',
             'username': 'testuser',
-            'date_of_birth': '2000-01-01'
+            # 'date_of_birth': '2000-01-01'
         }
 
     def test_user_signup(self):

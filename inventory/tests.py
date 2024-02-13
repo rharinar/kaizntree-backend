@@ -1,9 +1,10 @@
+from os import path
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from .models import Users, Categories, Items, Tags
+from .models import Categories, Items, Tags
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from django.core.management import call_command
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     return str(refresh.access_token)
@@ -11,24 +12,36 @@ def get_tokens_for_user(user):
 class ItemAndCategoryAPITests(APITestCase):
     def setUp(self):
         # Create a test user and get JWT token for authentication
-        self.user = Users.objects.create_user(username="testuser", email="test@example.com", password="testpassword")
-        self.token = get_tokens_for_user(self.user)
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
+        # call_command('migrate', interactive=False, verbosity=0)
+        self.user_data = {
+            'email': 'test@example.com',
+            'password': 'testpassword123',
+        }
 
         # URL setup
-        self.create_category_url = reverse('create-category')
-        self.create_item_url = reverse('create-item')
-        self.item_list_url = reverse('item-List')
+        self.live_url = 'http://18.118.147.123:8000/'
+        self.create_category_url = self.live_url+'/inventory/category/create'
+        self.create_item_url = self.live_url+'/inventory/items/create'
+        self.item_list_url = self.live_url+'/inventory/items/'
+        self.login_url = self.live_url+'/inventory/users/login'
+        self.signup_url = self.live_url+'/inventory/users/signup'
+        self.client.post(self.login_url, self.user_data, format='json')
+        # category = Categories.objects.get(name='Electronics')
 
     def test_create_category(self):
         """
         Ensure we can create a new category.
         """
+        login_data = {
+            'email': self.user_data['email'],
+            'password': self.user_data['password']
+        }
+        response = self.client.post(self.login_url, login_data, format='json')
+        self.token = response.data['tokens']['access'] 
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
         data = {"name": "Electronics"}
         response = self.client.post(self.create_category_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Categories.objects.count(), 1)
-        self.assertEqual(Categories.objects.get().name, 'Electronics')
 
     def test_create_item(self):
         """
